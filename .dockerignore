@@ -1,0 +1,47 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+*.md
+README.md
+LICENSE
+
+# Test files
+test_videos/
+test_outputs/
+tests/
+
+# Workspace (will be mounted as volume)
+workspace/temp/*
+workspace/output/*
+
+# Logs
+logs/*.log
+
+# Docker
+docker-compose.yml
+.dockerignore
+Dockerfile
