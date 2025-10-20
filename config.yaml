@@ -1,0 +1,70 @@
+# AI Video Upscaler Pro - Configuration
+
+models:
+  base_path: "./models"
+  realesrgan:
+    x4plus: "realesrgan/RealESRGAN_x4plus.pth"
+    x2plus: "realesrgan/RealESRGAN_x2plus.pth"
+    anime: "realesrgan/RealESRGAN_x4plus_anime_6B.pth"
+  codeformer:
+    main: "codeformer/codeformer.pth"
+    detection: "codeformer/detection_Resnet50_Final.pth"
+    parsing: "codeformer/parsing_parsenet.pth"
+  gfpgan:
+    v1_3: "gfpgan/GFPGANv1.3.pth"
+    v1_4: "gfpgan/GFPGANv1.4.pth"
+  rife:
+    v4_6: "rife/flownet.pkl"
+  basicvsr:
+    plusplus: "basicvsr/BasicVSR_PlusPlus.pth"
+
+workspace:
+  path: "./workspace"
+  temp_path: "./workspace/temp"
+  output_path: "./workspace/output"
+
+processing:
+  max_video_size_mb: 2048
+  max_video_duration_seconds: 3600
+  default_preset: "balanced"
+  tile_size: 512
+  tile_pad: 10
+  pre_pad: 0
+  half_precision: true
+  
+server:
+  host: "0.0.0.0"
+  port: 7860
+  share: false
+  queue_max_size: 10
+
+presets:
+  quick:
+    scale: 2
+    model: "x2plus"
+    interpolation: false
+    face_enhance: false
+  balanced:
+    scale: 4
+    model: "x4plus"
+    interpolation: false
+    face_enhance: false
+  quality:
+    scale: 4
+    model: "x4plus"
+    interpolation: "rife"
+    face_enhance: false
+  anime:
+    scale: 4
+    model: "anime"
+    interpolation: "rife"
+    face_enhance: false
+  smooth:
+    scale: 4
+    model: "x4plus"
+    interpolation: "film"
+    face_enhance: false
+
+logging:
+  level: "INFO"
+  file: "./logs/app.log"
