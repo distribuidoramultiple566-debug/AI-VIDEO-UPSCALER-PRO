@@ -1,47 +1,71 @@
+# AI Video Upscaler Pro - .dockerignore
+
 # Git
-.git
+.git/
 .gitignore
 .gitattributes
 
-# Python
-__pycache__
-*.py[cod]
-*$py.class
-*.so
-.Python
-*.egg-info
+# Documentation
+*.md
+docs/
+LICENSE
 
-# Virtual Environment
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
 venv/
 env/
 ENV/
+.venv
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
-.DS_Store
 
-# Documentation
-*.md
-README.md
-LICENSE
+# Models (se descargan en build)
+models/**/*.pth
+models/**/*.pkl
 
-# Test files
-test_videos/
-test_outputs/
-tests/
-
-# Workspace (will be mounted as volume)
-workspace/temp/*
-workspace/output/*
+# Workspace
+workspace/
+output/
+outputs/
 
 # Logs
-logs/*.log
+logs/
+*.log
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Examples (videos grandes)
+examples/**/*.mp4
+examples/**/*.avi
+examples/**/*.mov
 
 # Docker
-docker-compose.yml
 .dockerignore
-Dockerfile
+docker-compose*.yml
+Dockerfile*
+
+# System
+.DS_Store
+Thumbs.db
+
+# Testing
+tests/
+.pytest_cache/
+.coverage
+
+# CI/CD
+.github/
+.gitlab-ci.yml
