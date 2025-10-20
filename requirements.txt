@@ -1,53 +1,89 @@
-# PyTorch with CUDA 12.1
-torch==2.1.2
-torchvision==0.16.2
-torchaudio==2.1.2
+# ═══════════════════════════════════════════════════════════════
+# AI VIDEO UPSCALER PRO - REQUIREMENTS 
+# Versión: 2.0.0 - Compatible con CUDA 12.8
+# ═══════════════════════════════════════════════════════════════
+
+# ═══════════════════════════════════════════════════════════════
+# DEEP LEARNING CORE - CUDA 12.8 Compatible
+# ═══════════════════════════════════════════════════════════════
 --extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.2.0+cu121
+torchvision==0.17.0+cu121  
+torchaudio==2.2.0+cu121
 
-# xFormers for efficient transformers
-xformers==0.0.23.post1
+# CUDA Extensions
+xformers==0.0.24
 
-# Computer Vision
-opencv-python==4.8.1.78
-opencv-contrib-python==4.8.1.78
-Pillow==10.1.0
-imageio==2.31.6
-imageio-ffmpeg==0.4.9
+# TensorFlow (para FILM de Google)
+tensorflow==2.15.0
+tensorflow-hub==0.15.0
+tensorflow-addons==0.23.0
+
+# ═══════════════════════════════════════════════════════════════
+# COMPUTER VISION & IMAGE PROCESSING
+# ═══════════════════════════════════════════════════════════════
+opencv-python==4.9.0.80
+opencv-contrib-python==4.9.0.80
 scikit-image==0.22.0
+scipy==1.12.0
+pillow==10.2.0
+albumentations==1.4.0
 
-# Deep Learning Frameworks
-timm==0.9.12
-tensorboard==2.15.1
+# ═══════════════════════════════════════════════════════════════
+# VIDEO PROCESSING
+# ═══════════════════════════════════════════════════════════════
+ffmpeg-python==0.2.0
+imageio==2.34.0
+imageio-ffmpeg==0.4.9
+moviepy==1.0.3
+av==11.0.0
 
-# Face Enhancement
-facexlib==0.3.0
-realesrgan==0.3.0
+# ═══════════════════════════════════════════════════════════════
+# AI MODELS - SUPER RESOLUTION
+# ═══════════════════════════════════════════════════════════════
 basicsr==1.4.2
+realesrgan==0.3.0
+facexlib==0.3.0
 gfpgan==1.3.8
 
-# Video Processing
-ffmpeg-python==0.2.0
-av==10.0.0
-
-# Gradio Interface
-gradio==4.7.1
-
-# Utilities
-numpy==1.24.3
-scipy==1.11.4
-matplotlib==3.8.2
-tqdm==4.66.1
+# ═══════════════════════════════════════════════════════════════
+# UTILITIES & TOOLS
+# ═══════════════════════════════════════════════════════════════
+einops==0.7.0
+numpy==1.26.4
+tqdm==4.66.2
 pyyaml==6.0.1
 requests==2.31.0
+huggingface-hub==0.20.3
+safetensors==0.4.2
+omegaconf==2.3.0
+lpips==0.1.4
+timm==0.9.16
+
+# ═══════════════════════════════════════════════════════════════
+# WEB INTERFACE
+# ═══════════════════════════════════════════════════════════════
+gradio==4.19.2
+gradio-client==0.10.0
+
+# ═══════════════════════════════════════════════════════════════
+# PERFORMANCE & MONITORING
+# ═══════════════════════════════════════════════════════════════
+psutil==5.9.8
+GPUtil==1.4.0
+nvidia-ml-py3==7.352.0
+py3nvml==0.2.7
+
+# ═══════════════════════════════════════════════════════════════
+# LOGGING & DEBUGGING
+# ═══════════════════════════════════════════════════════════════
 loguru==0.7.2
+colorama==0.4.6
+rich==13.7.1
 
-# ONNX Runtime (for RIFE)
-onnxruntime-gpu==1.16.3
-
-# Additional dependencies
-einops==0.7.0
-lmdb==1.4.1
-pybind11==2.11.1
-tb-nightly==2.16.0a20231219
-future==0.18.3
-yapf==0.40.2
+# ═══════════════════════════════════════════════════════════════
+# OPTIONAL - CUDA 12.8 PERFORMANCE BOOST
+# ═══════════════════════════════════════════════════════════════
+# Descomentar si tienes CUDA 12.8 instalado localmente:
+# cupy-cuda12x==13.0.0
+# triton==2.2.0
