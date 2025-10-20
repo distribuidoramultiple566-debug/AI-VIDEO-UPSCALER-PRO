@@ -1,3 +1,5 @@
+# AI Video Upscaler Pro - .gitignore
+
 # Python
 __pycache__/
 *.py[cod]
@@ -16,19 +18,15 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
-share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-PIPFILE.lock
 
 # Virtual Environment
 venv/
 env/
 ENV/
-env.bak/
-venv.bak/
+.venv
 
 # IDE
 .vscode/
@@ -38,41 +36,51 @@ venv.bak/
 *~
 .DS_Store
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Models (too large for git)
-models/*.pth
-models/*.pkl
-models/*.onnx
-models/*.safetensors
-
-# Keep .gitkeep files
+# Models (NO subir modelos grandes a Git)
+models/**/*.pth
+models/**/*.pkl
+models/**/*.onnx
+models/**/*.pt
 !models/.gitkeep
-!workspace/.gitkeep
-!examples/.gitkeep
-!assets/.gitkeep
 
-# Workspace
-workspace/temp/*
-workspace/output/*
-!workspace/temp/.gitkeep
-!workspace/output/.gitkeep
+# Workspace (videos procesados)
+workspace/
+!workspace/.gitkeep
 
 # Logs
-logs/*.log
-!logs/.gitkeep
+logs/
+*.log
 
-# Environment variables
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Docker
 .env
-.env.local
 
-# Repos (cloned dependencies)
-repos/
+# Output
+output/
+outputs/
 
-# Test files
-test_videos/
-test_outputs/
+# Examples (opcional - comentar si quieres subir ejemplos)
+examples/**/*.mp4
+examples/**/*.avi
+examples/**/*.mov
+!examples/.gitkeep
 
 # System
+.DS_Store
 Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Gradio
+flagged/
