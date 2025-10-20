@@ -5,33 +5,168 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+      cache_from:
+        - ai-video-upscaler-pro:latest
+    
     image: ai-video-upscaler-pro:latest
     container_name: ai-video-upscaler-pro
+    
+    # Nombre del hostname interno
+    hostname: ai-upscaler
+    
+    # Puertos expuestos
     ports:
-      - "7860:7860"
+      - "${GRADIO_PORT:-7860}:7860"
+      - "${API_PORT:-8000}:8000"  # Puerto adicional para API REST futura
+    
+    # Volúmenes montados
     volumes:
-      - ./workspace:/app/workspace
-      - ./models:/app/models
-      - ./examples:/app/examples
-      - ./logs:/app/logs
+      # Datos persistentes
+      - ./workspace:/app/workspace:rw
+      - ./models:/app/models:rw
+      - ./logs:/app/logs:rw
+      - ./examples:/app/examples:ro
+      
+      # Cache para mejorar rendimiento
+      - model-cache:/root/.cache
+      - pip-cache:/root/.pip
+      
+      # Para desarrollo (comentar en producción)
+      # - ./app:/app/app:ro
+      # - ./scripts:/app/scripts:ro
+      # - ./vsh.py:/app/vsh.py:ro
+    
+    # Variables de entorno
     environment:
+      # Servidor
       - GRADIO_SERVER_NAME=0.0.0.0
-      - GRADIO_SERVER_PORT=7860
-      - CUDA_VISIBLE_DEVICES=0
-      - NUMEXPR_MAX_THREADS=16
+      - GRADIO_SERVER_PORT=${GRADIO_PORT:-7860}
+      - GRADIO_SHARE=${GRADIO_SHARE:-false}
+      
+      # CUDA Configuration
+      - CUDA_VISIBLE_DEVICES=${CUDA_DEVICES:-0}
+      - CUDA_LAUNCH_BLOCKING=${CUDA_LAUNCH_BLOCKING:-0}
+      - TORCH_CUDA_ARCH_LIST=6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0
       - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+      - FORCE_CUDA=1
+      
+      # Performance
+      - NUMEXPR_MAX_THREADS=${CPU_THREADS:-16}
+      - OMP_NUM_THREADS=${CPU_THREADS:-16}
+      - MKL_NUM_THREADS=${CPU_THREADS:-16}
+      
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PYTHONUNBUFFERED=1
+      
+      # Paths
+      - MODEL_PATH=/app/models
+      - WORKSPACE_PATH=/app/workspace
+      
+      # TensorFlow GPU Config (para FILM)
+      - TF_CPP_MIN_LOG_LEVEL=2
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
+      
+      # Misc
+      - TZ=${TIMEZONE:-UTC}
+      - DEBIAN_FRONTEND=noninteractive
+    
+    # GPU Support - Método 1: Deploy (Docker Compose v1.28+)
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    restart: unless-stopped
+              count: ${GPU_COUNT:-all}
+              capabilities: [gpu, compute, utility]
+        limits:
+          cpus: '${CPU_LIMIT:-8}'
+          memory: ${MEMORY_LIMIT:-32G}
+    
+    # GPU Support - Método 2: Runtime (alternativa, descomentar si falla el método 1)
+    # runtime: nvidia
+    
+    # Healthcheck
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    
+    # Política de reinicio
+    restart: ${RESTART_POLICY:-unless-stopped}
+    
+    # Configuración de red
+    networks:
+      - ai-network
+    
+    # DNS personalizado (opcional)
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    
+    # Capacidades adicionales
+    cap_add:
+      - SYS_NICE  # Para ajustar prioridad de procesos
+    
+    # Seguridad
+    security_opt:
+      - no-new-privileges:true
+    
+    # Shared memory (importante para PyTorch)
+    shm_size: ${SHM_SIZE:-8gb}
+    
+    # TTY para interacción
     stdin_open: true
     tty: true
-    shm_size: '8gb'
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-100m}"
+        max-file: "${LOG_MAX_FILES:-5}"
+        compress: "true"
+    
+    # Labels para metadata
+    labels:
+      - "com.ai-video-upscaler.version=2.0.0"
+      - "com.ai-video-upscaler.description=AI Video Upscaler Pro with CUDA 12.8"
+      - "com.ai-video-upscaler.maintainer=AI Video Labs"
+      - "com.ai-video-upscaler.cuda=12.8"
+      - "traefik.enable=false"  # Desactivar si usas Traefik
+    
+    # Dependencias (si tuvieras otros servicios)
+    # depends_on:
+    #   - redis
+    #   - postgres
 
+# Volúmenes nombrados para persistencia
+volumes:
+  model-cache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${MODEL_CACHE_PATH:-./cache/models}
+  
+  pip-cache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PIP_CACHE_PATH:-./cache/pip}
+
+# Red personalizada
 networks:
-  default:
-    name: ai-video-upscaler-network
+  ai-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${NETWORK_SUBNET:-172.20.0.0/16}
+    driver_opts:
+      com.docker.network.bridge.name: br-ai-upscaler
